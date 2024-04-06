@@ -104,7 +104,6 @@ class SQLiteRepository(AbstractRepository[T]):
         """
         with sqlite3.connect(self.file_dbase) as con:
             query = f'SELECT * FROM {self.table_name} WHERE id = {pk}'
-            # TODO is it possible to fetch more than one?
             result = con.cursor().execute(query).fetchone()
             if result is None:
                 return None
