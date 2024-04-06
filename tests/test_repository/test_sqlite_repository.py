@@ -6,19 +6,19 @@ import pytest
 @pytest.fixture
 def custom_class():
     class Custom():
-        pk: int = 0
+        pk_: int = 0
         name: str = "$uicideboy$"
         value: int = 47
         real: float = 1.5
 
         def __str__(self) -> str:
-            return f'pk={self.pk} name={self.name} value={self.value}'
+            return f'pk_={self.pk_} name={self.name} value={self.value}'
 
         def __eq__(self, other) -> bool:
             if not isinstance(other, Custom):
                 return NotImplemented
 
-            return self.pk == other.pk and self.name == other.name and self.value == other.value
+            return self.pk_ == other.pk_ and self.name == other.name and self.value == other.value
 
     return Custom
 
@@ -30,33 +30,33 @@ def repo(custom_class):
 
 def test_crud(repo, custom_class):
     obj = custom_class()
-    pk = repo.add(obj)
-    assert obj.pk == pk
-    assert repo.get(pk) == obj
+    pk_ = repo.add(obj)
+    assert obj.pk_ == pk_
+    assert repo.get(pk_) == obj
     obj2 = custom_class()
-    obj2.pk = pk
+    obj2.pk_ = pk_
     repo.update(obj2)
-    assert repo.get(pk) == obj2
-    repo.delete(pk)
-    assert repo.get(pk) is None
+    assert repo.get(pk_) == obj2
+    repo.delete(pk_)
+    assert repo.get(pk_) is None
 
 def test_update(repo, custom_class):
     obj = custom_class()
-    pk = repo.add(obj)
+    pk_ = repo.add(obj)
     obj.name = "update"
-    assert repo.get(pk) != obj
+    assert repo.get(pk_) != obj
     repo.update(obj)
-    assert repo.get(pk) == obj
+    assert repo.get(pk_) == obj
 
 
-def test_cannot_add_with_pk(repo, custom_class):
+def test_cannot_add_with_pk_(repo, custom_class):
     obj = custom_class()
-    obj.pk = 1
+    obj.pk_ = 1
     with pytest.raises(ValueError):
         repo.add(obj)
 
 
-def test_cannot_add_without_pk(repo):
+def test_cannot_add_without_pk_(repo):
     with pytest.raises(ValueError):
         repo.add(0)
 
@@ -66,7 +66,7 @@ def test_cannot_delete_unexistent(repo):
         repo.delete(-1)
 
 
-def test_cannot_update_without_pk(repo, custom_class):
+def test_cannot_update_without_pk_(repo, custom_class):
     obj = custom_class()
     with pytest.raises(ValueError):
         repo.update(obj)

@@ -17,13 +17,13 @@ def repo():
 def test_create_object():
     c = Category('name')
     assert c.name == 'name'
-    assert c.pk == 0
+    assert c.pk_ == 0
     assert c.parent is None
 
-    c = Category(name='name', parent=1, pk=2)
+    c = Category(name='name', parent=1, pk_=2)
     assert c.name == 'name'
     assert c.parent == 1
-    assert c.pk == 2
+    assert c.pk_ == 2
 
 
 def test_reassign():
@@ -32,43 +32,43 @@ def test_reassign():
     """
     c = Category('name')
     c.name = 'test'
-    c.pk = 1
+    c.pk_ = 1
     assert c.name == 'test'
-    assert c.pk == 1
+    assert c.pk_ == 1
 
 
 def test_eq():
     """
     class should implement __eq__ method
     """
-    c1 = Category(name='name', parent=1, pk=2)
-    c2 = Category(name='name', parent=1, pk=2)
+    c1 = Category(name='name', parent=1, pk_=2)
+    c2 = Category(name='name', parent=1, pk_=2)
     assert c1 == c2
 
 
 def test_get_parent(repo):
     c1 = Category(name='parent')
-    pk = repo.add(c1)
-    c2 = Category(name='name', parent=pk)
+    pk_ = repo.add(c1)
+    c2 = Category(name='name', parent=pk_)
     repo.add(c2)
     assert c2.get_parent(repo) == c1
 
 
 def test_get_all_parents(repo):
-    parent_pk = None
+    parent_pk_ = None
     for i in range(5):
-        c = Category(str(i), parent=parent_pk)
-        parent_pk = repo.add(c)
+        c = Category(str(i), parent=parent_pk_)
+        parent_pk_ = repo.add(c)
     gen = c.get_all_parents(repo)
     assert isgenerator(gen)
     assert [c.name for c in gen] == ['3', '2', '1', '0']
 
 
 def test_get_subcategories(repo: MemoryRepository[Category]):
-    parent_pk = None
+    parent_pk_ = None
     for i in range(5):
-        c = Category(str(i), parent=parent_pk)
-        parent_pk = repo.add(c)
+        c = Category(str(i), parent=parent_pk_)
+        parent_pk_ = repo.add(c)
     c = repo.get_all({'name': '0'})[0]
     gen = c.get_subcategories(repo)
     assert isgenerator(gen)
@@ -78,11 +78,11 @@ def test_get_subcategories(repo: MemoryRepository[Category]):
 
 def test_get_subcategories_complicated(repo: MemoryRepository[Category]):
     root = Category('0')
-    root_pk = repo.add(root)
-    repo.add(Category('1', root_pk))
-    pk2 = repo.add(Category('2', root_pk))
-    repo.add(Category('3', pk2))
-    repo.add(Category('4', pk2))
+    root_pk_ = repo.add(root)
+    repo.add(Category('1', root_pk_))
+    pk_2 = repo.add(Category('2', root_pk_))
+    repo.add(Category('3', pk_2))
+    repo.add(Category('4', pk_2))
 
     gen = root.get_subcategories(repo)
     assert isgenerator(gen)
@@ -97,9 +97,9 @@ def test_create_from_tree(repo):
     parent = next(c for c in cats if c.name == 'parent')
     assert parent.parent is None
     c1 = next(c for c in cats if c.name == '1')
-    assert c1.parent == parent.pk
+    assert c1.parent == parent.pk_
     c2 = next(c for c in cats if c.name == '2')
-    assert c2.parent == c1.pk
+    assert c2.parent == c1.pk_
 
 
 def test_create_from_tree_error(repo):

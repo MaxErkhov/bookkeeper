@@ -26,7 +26,7 @@ class SQLiteRepository(AbstractRepository[T]):
         self.file_dbase = file_dbase
         self.table_name = cls.__name__.lower()
         self.fields = get_annotations(cls, eval_str=True)
-        self.fields.pop('pk')
+        self.fields.pop('pk_')
         self.cls_ty = cls
 
         with sqlite3.connect(self.file_dbase) as con:
@@ -57,11 +57,11 @@ class SQLiteRepository(AbstractRepository[T]):
         }
         return type_mapping.get(attr_type, 'TEXT')
 
-    def is_in_dbase(self, cursor: Any, pk: int) -> bool:
+    def is_in_dbase(self, cursor: Any, pk_: int) -> bool:
         """
         Проверяет, существует ли запись с данным primary key.
         """
-        query = f'SELECT * FROM {self.table_name} WHERE id = {pk}'
+        query = f'SELECT * FROM {self.table_name} WHERE id = {pk_}'
         res = cursor.execute(query).fetchone()
         return res is not None
 
@@ -69,8 +69,8 @@ class SQLiteRepository(AbstractRepository[T]):
         """
         Добавляет объект в базу данных.
         """
-        if getattr(obj, 'pk', None) != 0:
-            raise ValueError(f'trying to add object {obj} with filled `pk` attribute')
+        if getattr(obj, 'pk_', None) != 0:
+            raise ValueError(f'trying to add object {obj} with filled `pk_` attribute')
         names = ', '.join(self.fields.keys())
         qmarks = ', '.join("?" * len(self.fields))
         values = [getattr(obj, x) for x in self.fields]
@@ -82,29 +82,28 @@ class SQLiteRepository(AbstractRepository[T]):
                 values
             )
             if not cursor.lastrowid:
-                raise ValueError("No assignable pk")
-            obj.pk = int(cursor.lastrowid)
+                raise ValueError("No assignable pk_")
+            obj.pk_ = int(cursor.lastrowid)
 
         con.close()
-        return obj.pk
+        return obj.pk_
 
     def fill_object(self, result: Any) -> T:
         """
         Заполняет атрибуты объекта на основе результата запроса к базе данных.
         """
         obj: T = self.cls_ty()
-        obj.pk = result[0]
+        obj.pk_ = result[0]
         for x, res in zip(self.fields, result[1:]):
             setattr(obj, x, res)
         return obj
 
-    def get(self, pk: int) -> T | None:
+    def get(self, pk_: int) -> T | None:
         """
         Возвращает объект из базы данных по primary key.
         """
         with sqlite3.connect(self.file_dbase) as con:
-            query = f'SELECT * FROM {self.table_name} WHERE id = {pk}'
-            # TODO is it possible to fetch more than one?
+            query = f'SELECT * FROM {self.table_name} WHERE id = {pk_}'
             result = con.cursor().execute(query).fetchone()
             if result is None:
                 return None
@@ -140,20 +139,20 @@ class SQLiteRepository(AbstractRepository[T]):
         upd_stm = ', '.join(setter)
 
         with sqlite3.connect(self.file_dbase) as con:
-            if not self.is_in_dbase(con.cursor(), obj.pk):
-                raise ValueError(f'No object with id={obj.pk} in DB.')
-            query = f'UPDATE {self.table_name} SET {upd_stm} WHERE id = {obj.pk}'
+            if not self.is_in_dbase(con.cursor(), obj.pk_):
+                raise ValueError(f'No object with id={obj.pk_} in DB.')
+            query = f'UPDATE {self.table_name} SET {upd_stm} WHERE id = {obj.pk_}'
             con.cursor().execute(query)
         con.close()
 
-    def delete(self, pk: int) -> None:
+    def delete(self, pk_: int) -> None:
         """
         Удаляет запись из базы данных.
         """
         with sqlite3.connect(self.file_dbase) as con:
-            if not self.is_in_dbase(con.cursor(), pk):
-                raise KeyError(f'No object with id={pk} in DB.')
-            query = f'DELETE FROM {self.table_name} WHERE id = {pk}'
+            if not self.is_in_dbase(con.cursor(), pk_):
+                raise KeyError(f'No object with id={pk_} in DB.')
+            query = f'DELETE FROM {self.table_name} WHERE id = {pk_}'
             con.cursor().execute(query)
         con.close()
 

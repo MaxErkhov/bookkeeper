@@ -12,14 +12,14 @@ class Expense:
     Расходная операция.
     amount - сумма
     category - id категории расходов
-    expense_date - дата расхода
+    waste_date - дата расхода
     added_date - дата добавления в бд
     comment - комментарий
-    pk - id записи в базе данных
+    pk_ - id записи в базе данных
     """
-    amount: int
-    category: int
-    expense_date: datetime = field(default_factory=datetime.now)
+    amount: float = 0.0
+    category: int = 0
+    waste_date: datetime = field(default_factory=datetime.now)
     added_date: datetime = field(default_factory=datetime.now)
     comment: str = ''
-    pk: int = 0
+    pk_: int = 0

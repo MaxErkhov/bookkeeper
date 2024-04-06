@@ -15,9 +15,9 @@ class Category:
     родителя (категория, подкатегорией которой является данная) в атрибуте parent.
     У категорий верхнего уровня parent = None
     """
-    name: str
+    name: str = ""
     parent: int | None = None
-    pk: int = 0
+    pk_: int = 0
 
     def get_parent(self,
                    repo: AbstractRepository['Category']) -> 'Category | None':
@@ -78,12 +78,12 @@ class Category:
             """ dfs in graph from root """
             for x in graph[root]:
                 yield x
-                yield from get_children(graph, x.pk)
+                yield from get_children(graph, x.pk_)
 
         subcats = defaultdict(list)
         for cat in repo.get_all():
             subcats[cat.parent].append(cat)
-        return get_children(subcats, self.pk)
+        return get_children(subcats, self.pk_)
 
     @classmethod
     def create_from_tree(
@@ -112,7 +112,7 @@ class Category:
         """
         created: dict[str, Category] = {}
         for child, parent in tree:
-            cat = cls(child, created[parent].pk if parent is not None else None)
+            cat = cls(child, created[parent].pk_ if parent is not None else None)
             repo.add(cat)
             created[child] = cat
         return list(created.values())

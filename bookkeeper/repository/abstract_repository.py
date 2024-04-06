@@ -2,8 +2,8 @@
 Модуль содержит описание абстрактного репозитория
 
 Репозиторий реализует хранение объектов, присваивая каждому объекту уникальный
-идентификатор в атрибуте pk (primary key). Объекты, которые могут быть сохранены
-в репозитории, должны поддерживать добавление атрибута pk и не должны
+идентификатор в атрибуте pk_ (primary key). Объекты, которые могут быть сохранены
+в репозитории, должны поддерживать добавление атрибута pk_ и не должны
 использовать его для иных целей.
 """
 
@@ -13,9 +13,9 @@ from typing import Generic, TypeVar, Protocol, Any
 
 class Model(Protocol):  # pylint: disable=too-few-public-methods
     """
-    Модель должна содержать атрибут pk
+    Модель должна содержать атрибут pk_
     """
-    pk: int
+    pk_: int
 
 
 T = TypeVar('T', bound=Model)
@@ -36,11 +36,11 @@ class AbstractRepository(ABC, Generic[T]):
     def add(self, obj: T) -> int:
         """
         Добавить объект в репозиторий, вернуть id объекта,
-        также записать id в атрибут pk.
+        также записать id в атрибут pk_.
         """
 
     @abstractmethod
-    def get(self, pk: int) -> T | None:
+    def get(self, pk_: int) -> T | None:
         """ Получить объект по id """
 
     @abstractmethod
@@ -53,8 +53,8 @@ class AbstractRepository(ABC, Generic[T]):
 
     @abstractmethod
     def update(self, obj: T) -> None:
-        """ Обновить данные об объекте. Объект должен содержать поле pk. """
+        """ Обновить данные об объекте. Объект должен содержать поле pk_. """
 
     @abstractmethod
-    def delete(self, pk: int) -> None:
+    def delete(self, pk_: int) -> None:
         """ Удалить запись """
