@@ -10,6 +10,10 @@ from bookkeeper.models.expense import Expense
 
 
 class AbstractView(Protocol):
+    """
+    Протокол для определения интерфейса представления,
+    который включает в себя методы для работы с категориями и бюджетом
+    """
     def set_category_list(self, notused: list[Category]) -> None:
         """
         Устанавливает список категорий в представлении.

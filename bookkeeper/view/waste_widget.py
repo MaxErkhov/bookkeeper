@@ -10,6 +10,7 @@ from bookkeeper.models.expense import Expense
 from bookkeeper.repository.repository_factory import RepositoryFactory
 from .presenters import PresenterWaste
 from .category_edit_widget import EditingWindow
+from .common_styles import COMMON_STYLESHEET
 
 
 class TableRow():
@@ -219,36 +220,7 @@ class Table(QTableWidget):
                                        "Категория "
                                        "Комментарий".split())
 
-        self.setStyleSheet("""
-            QLabel {
-                font-size: 18px;
-                font-weight: bold;
-            }
-            QTableWidget {
-                gridline-color: #ddd;
-                background-color: #f5f5f5;
-                font: 14px;
-                border-radius: 5px;
-            }
-            QTableWidget::item {
-                padding: 5px;
-                background-color: #ffffff;
-                border: 1px solid #ddd;
-                border-radius: 5px;
-            }
-            QTableWidget::item:selected {
-                background-color: #e0e0e0;
-            }
-            QHeaderView::section {
-                background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                             stop: 0 #007bff, stop: 1 #0056b3);
-                color: white;
-                padding: 5px;
-                border: 1px solid #ddd;
-                font: 14px;
-                border-radius: 5px;
-            }
-        """)
+        self.setStyleSheet(COMMON_STYLESHEET)
 
         header = self.horizontalHeader()
         header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)

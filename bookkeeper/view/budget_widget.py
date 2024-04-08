@@ -5,6 +5,7 @@ from PySide6 import QtWidgets, QtCore
 from PySide6.QtWidgets import (QWidget, QTableWidgetItem, QMessageBox)
 from bookkeeper.repository.repository_factory import RepositoryFactory
 from bookkeeper.models.budget import Budget
+from .common_styles import COMMON_STYLESHEET
 
 from .presenters import PresenterBudget
 
@@ -108,43 +109,7 @@ class BudgetWidget(QWidget):
         budget_icon = QtWidgets.QLabel("Бюджет")
         layout.addWidget(budget_icon)
 
-        self.setStyleSheet("""
-            QWidget {
-                background-color: #f5f5f5;
-                font: 14px;
-                border-radius: 5px;
-            }
-            QLabel {
-                font-size: 18px;
-                font-weight: bold;
-            }
-            QTableWidget {
-                gridline-color: #ddd;
-                background-color: #ffffff;
-                font: 14px;
-                border-radius: 5px;
-            }
-            QTableWidget::item {
-                padding: 14px;
-                background-color: #ffffff;
-                border: 1px solid #ddd;
-                border-radius: 5px;
-                color: #000000;
-            }
-            QTableWidget::item:selected {
-                background-color: #e0e0e0;
-                color: #000000;
-            }
-            QHeaderView::section {
-                background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                             stop: 0 #007bff, stop: 1 #0056b3);
-                color: white;
-                padding: 5px;
-                border: 1px solid #ddd;
-                font: 14px;
-                border-radius: 5px;
-            }
-        """)
+        self.setStyleSheet(COMMON_STYLESHEET)
 
         self.wastings_table = QtWidgets.QTableWidget(2, 3)
         self.wastings_table.setColumnCount(2)
