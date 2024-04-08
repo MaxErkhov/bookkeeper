@@ -142,15 +142,15 @@ class EditingWindow(QWidget):
 
         setOnce: bool = False
 
-        for x in categories:
-            pk_ = x.pk_
-            parent = x.parent
+        for i in categories:
+            pk_ = i.pk_
+            parent = i.parent
 
             parent_category: Any = table
             if parent is not None:
                 parent_category = uniq_pk.get(int(parent))
 
-            category_item = CategoryEntity(parent_category, x)
+            category_item = CategoryEntity(parent_category, i)
             uniq_pk.update({pk_: category_item})
             if not setOnce:
                 table.setCurrentItem(category_item)

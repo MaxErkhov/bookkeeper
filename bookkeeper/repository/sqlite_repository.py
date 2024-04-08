@@ -73,7 +73,7 @@ class SQLiteRepository(AbstractRepository[T]):
             raise ValueError(f'trying to add object {obj} with filled `pk_` attribute')
         names = ', '.join(self.fields.keys())
         qmarks = ', '.join("?" * len(self.fields))
-        values = [getattr(obj, x) for x in self.fields]
+        values = [getattr(obj, i) for i in self.fields]
         with sqlite3.connect(self.file_dbase) as con:
             cursor = con.cursor()
             cursor.execute('PRAGMA foreign_keys = ON')
@@ -94,8 +94,8 @@ class SQLiteRepository(AbstractRepository[T]):
         """
         obj: T = self.cls_ty()
         obj.pk_ = result[0]
-        for x, res in zip(self.fields, result[1:]):
-            setattr(obj, x, res)
+        for i, res in zip(self.fields, result[1:]):
+            setattr(obj, i, res)
         return obj
 
     def get(self, pk_: int) -> T | None:
@@ -134,7 +134,7 @@ class SQLiteRepository(AbstractRepository[T]):
         """
         Обновляет объект в базе данных.
         """
-        values = [to_string(getattr(obj, x)) for x in self.fields]
+        values = [to_string(getattr(obj, i)) for i in self.fields]
         setter = [f'{col} = {val}' for col, val in zip(self.fields, values)]
         upd_stm = ', '.join(setter)
 

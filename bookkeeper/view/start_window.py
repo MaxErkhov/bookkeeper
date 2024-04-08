@@ -15,29 +15,29 @@ class StartWindow(QtWidgets.QMainWindow):
         self.setWindowTitle("Erkhov's Bookkeeper")
 
         layout = QtWidgets.QVBoxLayout()
-        categoryEditor = EditingWindow([[]])
-        wasteWidget = WasteWidget(categoryEditor)
-        budgetWidget = BudgetWidget(wasteWidget.presenter)
+        category_editor = EditingWindow([[]])
+        waste_widget = WasteWidget(category_editor)
+        budget_widget = BudgetWidget(waste_widget.presenter)
 
-        categoryEditor.category_changed.connect(wasteWidget.update_categorys)
-        wasteWidget.waste_changed.connect(budgetWidget.retrieve_waste)
+        category_editor.category_changed.connect(waste_widget.update_categorys)
+        waste_widget.waste_changed.connect(budget_widget.retrieve_waste)
 
-        wasteWidget.setSizePolicy(QtWidgets.QSizePolicy.Expanding,
+        waste_widget.setSizePolicy(QtWidgets.QSizePolicy.Expanding,
                                   QtWidgets.QSizePolicy.Expanding)
-        budgetWidget.setSizePolicy(QtWidgets.QSizePolicy.Expanding,
+        budget_widget.setSizePolicy(QtWidgets.QSizePolicy.Expanding,
                                    QtWidgets.QSizePolicy.Expanding)
-        categoryEditor.setSizePolicy(QtWidgets.QSizePolicy.Expanding,
+        category_editor.setSizePolicy(QtWidgets.QSizePolicy.Expanding,
                                      QtWidgets.QSizePolicy.Expanding)
 
-        editLayout = QtWidgets.QHBoxLayout()
-        editLayout.addWidget(budgetWidget)
-        editLayout.addWidget(categoryEditor)
-        editWidget = QtWidgets.QWidget()
-        editWidget.setLayout(editLayout)
+        edit_layout = QtWidgets.QHBoxLayout()
+        edit_layout.addWidget(budget_widget)
+        edit_layout.addWidget(category_editor)
+        edit_widget = QtWidgets.QWidget()
+        edit_widget.setLayout(edit_layout)
 
-        layout.addWidget(wasteWidget)
-        layout.addWidget(editWidget)
+        layout.addWidget(waste_widget)
+        layout.addWidget(edit_widget)
 
-        mainWidget = QtWidgets.QWidget()
-        mainWidget.setLayout(layout)
-        self.setCentralWidget(mainWidget)
+        main_widget = QtWidgets.QWidget()
+        main_widget.setLayout(layout)
+        self.setCentralWidget(main_widget)

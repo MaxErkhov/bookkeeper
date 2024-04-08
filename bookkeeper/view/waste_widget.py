@@ -278,13 +278,13 @@ class Table(QTableWidget):
         """
         row = TableRow(waste)
         category_item = TableCategoryEntity(row, self.parent)
-        rc = self.rowCount()
-        self.setRowCount(rc+1)
+        rc_ = self.rowCount()
+        self.setRowCount(rc_+1)
         self.itemChanged.disconnect()
-        self.setItem(rc, 0, TableDateEntity(row))
-        self.setItem(rc, 1, TableAmountEntity(row))
-        self.setItem(rc, 2, category_item)
-        self.setItem(rc, 3, TableEntity(row))
+        self.setItem(rc_, 0, TableDateEntity(row))
+        self.setItem(rc_, 1, TableAmountEntity(row))
+        self.setItem(rc_, 2, category_item)
+        self.setItem(rc_, 3, TableEntity(row))
         self.itemChanged.connect(self.update_waste_event)
 
     def delete_waste_event(self):
@@ -311,8 +311,8 @@ class Table(QTableWidget):
         waste = Expense()
         try:
             self.add_waste_line(waste)
-        except ValueError as ve:
-            QMessageBox.critical(self, 'Ошибка', f'{ve}')
+        except ValueError as ve_:
+            QMessageBox.critical(self, 'Ошибка', f'{ve_}')
             return
         self.parent.waste_adder(waste)
         self.parent.emit_waste_changed()
@@ -330,9 +330,9 @@ class Table(QTableWidget):
         try:
             for row in range(self.rowCount()):
                 self.item(row, 2).restore()
-        except ValueError as ve:
+        except ValueError as ve_:
             QMessageBox.critical(self, 'Ошибка',
-            f'Критическая ошибка.\n{ve}.\n Некоректные категории.')
+            f'Критическая ошибка.\n{ve_}.\n Некоректные категории.')
 
 
 class WasteWidget(QWidget):
@@ -390,15 +390,15 @@ class WasteWidget(QWidget):
         Устанавливает список расходов для отображения в таблице
         """
         list_to_delete: list[Expense] = []
-        for x in data:
+        for i in data:
             try:
-                self.table.add_waste_line(x)
-            except ValueError as ve:
-                QMessageBox.critical(self, 'Ошибка', f'Критическая ошибка.\n{ve}.\n'
-                    f'Запись {x.waste_date.strftime("%Y-%m-%d %H:%M:%S")} будет удалена.')
-                list_to_delete.append(x)
-        for x in list_to_delete:
-            self.waste_deleter(x)
+                self.table.add_waste_line(i)
+            except ValueError as ve_:
+                QMessageBox.critical(self, 'Ошибка', f'Критическая ошибка.\n{ve_}.\n'
+                    f'Запись {i.waste_date.strftime("%Y-%m-%d %H:%M:%S")} будет удалена.')
+                list_to_delete.append(i)
+        for i in list_to_delete:
+            self.waste_deleter(i)
 
     def update_categorys(self):
         """
