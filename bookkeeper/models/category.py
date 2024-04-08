@@ -76,9 +76,9 @@ class Category:
         def get_children(graph: dict[int | None, list['Category']],
                          root: int) -> Iterator['Category']:
             """ dfs in graph from root """
-            for x in graph[root]:
-                yield x
-                yield from get_children(graph, x.pk_)
+            for i in graph[root]:
+                yield i
+                yield from get_children(graph, i.pk_)
 
         subcats = defaultdict(list)
         for cat in repo.get_all():

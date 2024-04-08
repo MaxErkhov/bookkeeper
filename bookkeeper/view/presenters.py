@@ -10,35 +10,55 @@ from bookkeeper.models.expense import Expense
 
 
 class AbstractView(Protocol):
-    def set_category_list(notused: list[Category]) -> None:
-        pass
+    def set_category_list(self, notused: list[Category]) -> None:
+        """
+        Устанавливает список категорий в представлении.
+        """
 
-    def register_category_updater(handler):
-        pass
+    def register_category_updater(self, handler):
+        """
+        Регистрирует обработчик обновления категории.
+        """
 
-    def register_category_adder(handler):
-        pass
+    def register_category_adder(self, handler):
+        """
+        Регистрирует обработчик добавления новой категории.
+        """
 
-    def register_category_checker(handler):
-        pass
+    def register_category_checker(self, handler):
+        """
+        Регистрирует обработчик проверки уникальности имени категории.
+        """
 
-    def register_category_finder(handler):
-        pass
+    def register_category_finder(self, handler):
+        """
+        Регистрирует обработчик поиска категории по имени.
+        """
 
-    def register_category_deleter(handler):
-        pass
+    def register_category_deleter(self, handler):
+        """
+        Регистрирует обработчик удаления категории.
+        """
 
-    def register_category_retriever(handler):
-        pass
+    def register_category_retriever(self, handler):
+        """
+        Регистрирует обработчик получения категории.
+        """
 
-    def register_budget_updater(handler):
-        pass
+    def register_budget_updater(self, handler):
+        """
+        Регистрирует обработчик обновления бюджета.
+        """
 
-    def register_budget_getter(handler):
-        pass
+    def register_budget_getter(self, handler):
+        """
+        Регистрирует обработчик получения бюджета.
+        """
 
-    def register_waste_getter(handler):
-        pass
+    def register_waste_getter(self, handler):
+        """
+        Регистрирует обработчик получения расходов.
+        """
 
 
 class PresenterCategory:
@@ -75,9 +95,9 @@ class PresenterCategory:
         """
         Находит категорию по имени и возвращает ее первичный ключ
         """
-        for x in self.categories:
-            if x.name == name:
-                return x.pk_
+        for i in self.categories:
+            if i.name == name:
+                return i.pk_
         return None
 
     def add_category(self, category: Category) -> None:
@@ -92,16 +112,16 @@ class PresenterCategory:
         Удаляет категорию и все ее подкатегории из репозитория и представления
         """
         queue = [top_lvl_category]
-        to_delete = list()
+        to_delete = []
 
         while len(queue) != 0:
             proc = queue.pop()
             to_delete.append(proc)
-            queue.extend([x for x in self.categories if x.parent == proc.pk_])
+            queue.extend([i for i in self.categories if i.parent == proc.pk_])
 
-        for x in to_delete:
-            self.categories.remove(x)
-            self.category_repo.delete(x.pk_)
+        for i in to_delete:
+            self.categories.remove(i)
+            self.category_repo.delete(i.pk_)
 
 
 class PresenterBudget:
@@ -200,6 +220,6 @@ class PresenterWaste:
         Возвращает суммы расходов за указанный период
         """
         assert start > end
-        wastings = [x.amount for x in self.wastings
-                    if x.waste_date < start and x.waste_date > end]
+        wastings = [i.amount for i in self.wastings
+                    if i.waste_date < start and i.waste_date > end]
         return wastings

@@ -7,32 +7,13 @@ from .editing_window import EditingWindow
 
 
 class CategoryEditWidget(QWidget):
+    """
+    Виджет для редактирования категорий, включает в себя элементы
+    управления для ввода суммы и добавления новой категории,
+    а также виджет для редактирования существующих категорий
+    """
     def __init__(self) -> None:
         super().__init__()
-
-        self.setStyleSheet("""
-            QLabel {
-                font-size: 18px;
-                font-weight: bold;
-            }
-            QPushButton {
-                background-color: #007bff;
-                color: g;
-                border: none;
-                padding: 14px;
-                border-radius: 5px;
-                font-size: 14px;
-            }
-            QPushButton:hover {
-                background-color: #0056b3;
-            }
-            QLineEdit {
-                padding: 10px;
-                border: 1px solid #ddd;
-                border-radius: 5px;
-                font-size: 14px;
-            }
-        """)
 
         layout = QtWidgets.QVBoxLayout()
         message = QtWidgets.QLabel("Редактирование")

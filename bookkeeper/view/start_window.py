@@ -10,6 +10,11 @@ from .editing_window import EditingWindow
 
 
 class StartWindow(QtWidgets.QMainWindow):
+    """
+    Главное окно приложения, включающее в себя
+    виджеты для работы с расходами,
+    категориями расходов и бюджетом
+    """
     def __init__(self) -> None:
         super().__init__()
         self.setWindowTitle("Erkhov's Bookkeeper")
@@ -23,11 +28,11 @@ class StartWindow(QtWidgets.QMainWindow):
         waste_widget.waste_changed.connect(budget_widget.retrieve_waste)
 
         waste_widget.setSizePolicy(QtWidgets.QSizePolicy.Expanding,
-                                  QtWidgets.QSizePolicy.Expanding)
-        budget_widget.setSizePolicy(QtWidgets.QSizePolicy.Expanding,
                                    QtWidgets.QSizePolicy.Expanding)
+        budget_widget.setSizePolicy(QtWidgets.QSizePolicy.Expanding,
+                                    QtWidgets.QSizePolicy.Expanding)
         category_editor.setSizePolicy(QtWidgets.QSizePolicy.Expanding,
-                                     QtWidgets.QSizePolicy.Expanding)
+                                      QtWidgets.QSizePolicy.Expanding)
 
         edit_layout = QtWidgets.QHBoxLayout()
         edit_layout.addWidget(budget_widget)

@@ -1,14 +1,14 @@
 """
 Виджет для отображения расходов
 """
+from datetime import datetime
 from PySide6 import QtWidgets, QtCore
 from PySide6.QtWidgets import (QWidget, QTableWidget,
                                QMenu, QMessageBox, QTableWidgetItem)
-from datetime import datetime
 
-from .presenters import PresenterWaste
-from bookkeeper.repository.repository_factory import RepositoryFactory
 from bookkeeper.models.expense import Expense
+from bookkeeper.repository.repository_factory import RepositoryFactory
+from .presenters import PresenterWaste
 from .category_edit_widget import EditingWindow
 
 
@@ -22,7 +22,9 @@ class TableRow():
 
 class TableEntity(QTableWidgetItem):
     """
-    Класс для представления элемента таблицы с данными о расходе
+    Класс для представления элемента таблицы с данными о расходе.
+    Обеспечивает валидацию и обновление данных о расходе, а также восстановление
+    значения элемента из данных о расходе
     """
     def __init__(self, row: TableRow):
         super().__init__()
@@ -51,7 +53,7 @@ class TableEntity(QTableWidgetItem):
         """
         Возвращает сообщение об ошибке для недействительного значения
         """
-        pass
+        return "Ошибка - недействительное значение"
 
     def should_emit_on_upd(self) -> bool:
         """
@@ -63,7 +65,9 @@ class TableEntity(QTableWidgetItem):
 
 class TableAmountEntity(TableEntity):
     """
-    Класс для представления суммы расхода в таблице
+    Класс для представления суммы расхода в таблице.
+    Обеспечивает валидацию и обновление суммы расхода, а также восстановление
+    значения суммы из данных о расходе
     """
     def __init__(self, row: TableRow):
         super().__init__(row)
@@ -106,7 +110,9 @@ class TableAmountEntity(TableEntity):
 
 class TableCategoryEntity(TableEntity):
     """
-
+    Класс для представления категории расхода в таблице.
+    Обеспечивает валидацию и обновление категории расхода, а также восстановление
+    значения категории из данных о расходе
     """
     def __init__(self, row: TableRow, exp_view):
         self.category_view = exp_view.category_view
@@ -150,7 +156,9 @@ class TableCategoryEntity(TableEntity):
 
 class TableDateEntity(TableEntity):
     """
-
+    Класс для представления даты расхода в таблице.
+    Обеспечивает валидацию и обновление даты расхода, а также восстановление
+    значения даты из данных о расходе
     """
     fmt = "%Y-%m-%d %H:%M:%S"
 
@@ -197,7 +205,9 @@ class TableDateEntity(TableEntity):
 
 class Table(QTableWidget):
     """
-
+    Виджет таблицы для отображения и управления данными о расходах.
+    Предоставляет функциональность для добавления, удаления и обновления строк таблицы,
+    а также для работы с контекстным меню.
     """
     def __init__(self, parent):
         super().__init__()
@@ -332,18 +342,24 @@ class Table(QTableWidget):
                 self.item(row, 2).restore()
         except ValueError as ve_:
             QMessageBox.critical(self, 'Ошибка',
-            f'Критическая ошибка.\n{ve_}.\n Некоректные категории.')
+                                 f'Критическая ошибка.\n{ve_}.\nНекоректные категории.')
 
 
 class WasteWidget(QWidget):
     """
-
+    Виджет для отображения и управления расходами.
+    Предоставляет функциональностьдля добавления, удаления и обновления расходов,
+    а также для управления категориями расходов
     """
     waste_changed = QtCore.Signal()
 
     def __init__(self, category_view: EditingWindow) -> None:
         super().__init__()
         self.category_view = category_view
+        self.category_retriever = None
+        self.waste_adder = None
+        self.waste_deleter = None
+        self.waste_updater = None
 
         layout = QtWidgets.QVBoxLayout()
         message = QtWidgets.QLabel("Последние расходы")
@@ -395,7 +411,7 @@ class WasteWidget(QWidget):
                 self.table.add_waste_line(i)
             except ValueError as ve_:
                 QMessageBox.critical(self, 'Ошибка', f'Критическая ошибка.\n{ve_}.\n'
-                    f'Запись {i.waste_date.strftime("%Y-%m-%d %H:%M:%S")} будет удалена.')
+                                     f'Запись будет удалена.')
                 list_to_delete.append(i)
         for i in list_to_delete:
             self.waste_deleter(i)

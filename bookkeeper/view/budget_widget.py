@@ -3,9 +3,10 @@
 """
 from PySide6 import QtWidgets, QtCore
 from PySide6.QtWidgets import (QWidget, QTableWidgetItem, QMessageBox)
-from .presenters import PresenterBudget
 from bookkeeper.repository.repository_factory import RepositoryFactory
 from bookkeeper.models.budget import Budget
+
+from .presenters import PresenterBudget
 
 
 class BudgetPerDay(QTableWidgetItem):
@@ -97,6 +98,10 @@ class BudgetWidget(QWidget):
         super().__init__()
 
         self.waste_presenter = waste_presenter
+        self.budget_getter = None
+        self.budget_modifier = None
+        self.waste_getter = None
+
         layout = QtWidgets.QVBoxLayout()
         layout.setSpacing(15)
 

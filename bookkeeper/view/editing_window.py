@@ -1,13 +1,13 @@
 """
 Окно с выбором категорий для изменения
 """
+from typing import Any
 from PySide6 import QtWidgets, QtCore
 from PySide6.QtWidgets import (QWidget, QTreeWidgetItem, QMenu, QMessageBox)
-from typing import Any
 
-from .presenters import PresenterCategory
 from bookkeeper.repository.repository_factory import RepositoryFactory
 from bookkeeper.models.category import Category
+from .presenters import PresenterCategory
 
 
 class CategoryEntity(QTreeWidgetItem):
@@ -48,6 +48,11 @@ class EditingWindow(QWidget):
         self.categorys_widget = QtWidgets.QTreeWidget()
         self.categorys_widget.setColumnCount(1)
         self.categorys_widget.setHeaderLabel('Категории')
+        self.category_adder = None
+        self.category_updater = None
+        self.category_checker = None
+        self.category_deleter = None
+        self.category_finder = None
 
         self.setStyleSheet("""
             QWidget {
@@ -140,7 +145,7 @@ class EditingWindow(QWidget):
         table = self.categorys_widget
         uniq_pk: dict[int, CategoryEntity] = {}
 
-        setOnce: bool = False
+        set_once: bool = False
 
         for i in categories:
             pk_ = i.pk_
@@ -152,9 +157,9 @@ class EditingWindow(QWidget):
 
             category_item = CategoryEntity(parent_category, i)
             uniq_pk.update({pk_: category_item})
-            if not setOnce:
+            if not set_once:
                 table.setCurrentItem(category_item)
-                setOnce = True
+                set_once = True
 
     def contextMenuEvent(self, event) -> None:
         """
